@@ -1,41 +1,20 @@
 package br.com.zup.Credicard.card.blocking;
 
-import br.com.zup.Credicard.card.Card;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "blocks")
-public class Blocking {
-    @Id
-    @NotNull
-    private String id;
+public class BlockingDTO {
+    private final String id;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss", shape = JsonFormat.Shape.STRING, timezone = "America/Sao_Paulo")
-    private LocalDateTime bloqueadoEm;
+    private final LocalDateTime bloqueadoEm;
 
-    @NotBlank
-    private String sistemaResponsavel;
+    private final String sistemaResponsavel;
+    private final boolean ativo;
 
-    @NotNull
-    private boolean ativo;
-
-    @ManyToOne
-    private Card card;
-
-    @Deprecated
-    private Blocking() {}
-
-    public Blocking(
+    public BlockingDTO(
         String id,
         LocalDateTime bloqueadoEm,
         String sistemaResponsavel,
@@ -47,17 +26,13 @@ public class Blocking {
         this.ativo = ativo;
     }
 
-    public BlockingDTO toDTO() {
-        return new BlockingDTO(
+    public Blocking toModel() {
+        return new Blocking(
             id,
             bloqueadoEm,
             sistemaResponsavel,
             ativo
         );
-    }
-
-    public void setCard(Card card) {
-        this.card = card;
     }
 
     public String getId() {

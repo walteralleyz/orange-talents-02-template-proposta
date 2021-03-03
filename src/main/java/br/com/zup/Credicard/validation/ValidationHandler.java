@@ -1,5 +1,6 @@
 package br.com.zup.Credicard.validation;
 
+import br.com.zup.Credicard.exception.DomainException;
 import br.com.zup.Credicard.exception.MultipleFieldsException;
 import br.com.zup.Credicard.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,15 @@ public class ValidationHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
     public ValidationResponse handleNotFoundException(NotFoundException e) {
+        return new ValidationResponse(
+            e.getField(),
+            e.getMessage()
+        );
+    }
+
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(DomainException.class)
+    public ValidationResponse handleDomainException(DomainException e) {
         return new ValidationResponse(
             e.getField(),
             e.getMessage()

@@ -3,6 +3,7 @@ package br.com.zup.Credicard.card;
 import br.com.zup.Credicard.biometry.Biometry;
 import br.com.zup.Credicard.card.advice.Advice;
 import br.com.zup.Credicard.card.blocking.Blocking;
+import br.com.zup.Credicard.card.blocking.BlockingDTO;
 import br.com.zup.Credicard.card.installment.Installment;
 import br.com.zup.Credicard.card.wallet.Wallet;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -12,6 +13,7 @@ import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CardResponse {
     private final String id;
@@ -23,7 +25,7 @@ public class CardResponse {
     private final LocalDateTime emitidoEm;
 
     private final String titular;
-    private final List<Blocking> bloqueios;
+    private final List<BlockingDTO> bloqueios;
     private final List<Advice> avisos;
     private final List<Wallet> carteiras;
     private final List<Installment> parcelas;
@@ -33,7 +35,7 @@ public class CardResponse {
         String id,
         LocalDateTime emitidoEm,
         String titular,
-        List<Blocking> bloqueios,
+        List<BlockingDTO> bloqueios,
         List<Advice> avisos,
         List<Wallet> carteiras,
         List<Installment> parcelas,
@@ -58,7 +60,7 @@ public class CardResponse {
             id,
             emitidoEm,
             titular,
-            bloqueios,
+            bloqueios.stream().map(BlockingDTO::toModel).collect(Collectors.toList()),
             avisos,
             carteiras,
             parcelas,
@@ -83,7 +85,7 @@ public class CardResponse {
         return titular;
     }
 
-    public List<Blocking> getBloqueios() {
+    public List<BlockingDTO> getBloqueios() {
         return bloqueios;
     }
 

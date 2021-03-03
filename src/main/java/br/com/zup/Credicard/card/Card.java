@@ -3,8 +3,10 @@ package br.com.zup.Credicard.card;
 import br.com.zup.Credicard.biometry.Biometry;
 import br.com.zup.Credicard.card.advice.Advice;
 import br.com.zup.Credicard.card.blocking.Blocking;
+import br.com.zup.Credicard.card.blocking.BlockingDTO;
 import br.com.zup.Credicard.card.installment.Installment;
 import br.com.zup.Credicard.card.wallet.Wallet;
+import br.com.zup.Credicard.exception.DomainException;
 import br.com.zup.Credicard.proposal.Proposal;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.LazyCollection;
@@ -15,6 +17,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "cards")
@@ -30,7 +33,7 @@ public class Card {
     @Column(nullable = false)
     private String titular;
 
-    @OneToMany(mappedBy = "card")
+    @OneToMany(mappedBy = "card", cascade = CascadeType.MERGE)
     @LazyCollection(value = LazyCollectionOption.FALSE)
     private List<Blocking> bloqueios;
 
@@ -84,7 +87,7 @@ public class Card {
             id,
             emitidoEm,
             titular,
-            bloqueios,
+            bloqueios.stream().map(Blocking::toDTO).collect(Collectors.toList()),
             avisos,
             carteiras,
             parcelas,
@@ -92,6 +95,18 @@ public class Card {
             limite,
             biometries
         );
+    }
+
+    public void setBloqueios(BlockingDTO bloqueio) {
+        if(!bloqueios.isEmpty()) {
+            int lastIndex = bloqueios.size() - 1;
+            if(bloqueios.get(lastIndex).isAtivo())
+                throw new DomainException("blocking", "Card");
+        }
+
+        Blocking blocking = bloqueio.toModel();
+        blocking.setCard(this);
+        bloqueios.add(blocking);
     }
 
     public String getId() {
