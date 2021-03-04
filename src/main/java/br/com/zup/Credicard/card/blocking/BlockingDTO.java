@@ -1,5 +1,6 @@
 package br.com.zup.Credicard.card.blocking;
 
+import br.com.zup.Credicard.user.UserRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
@@ -13,6 +14,8 @@ public class BlockingDTO {
 
     private final String sistemaResponsavel;
     private final boolean ativo;
+
+    private UserRequest user;
 
     public BlockingDTO(
         String id,
@@ -31,8 +34,13 @@ public class BlockingDTO {
             id,
             bloqueadoEm,
             sistemaResponsavel,
-            ativo
+            ativo,
+            user.toModel()
         );
+    }
+
+    public void setUser(UserRequest request) {
+        this.user = request;
     }
 
     public String getId() {
@@ -49,5 +57,9 @@ public class BlockingDTO {
 
     public boolean isAtivo() {
         return ativo;
+    }
+
+    public UserRequest getUser() {
+        return user;
     }
 }

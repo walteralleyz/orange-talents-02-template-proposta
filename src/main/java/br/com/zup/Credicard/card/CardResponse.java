@@ -2,6 +2,7 @@ package br.com.zup.Credicard.card;
 
 import br.com.zup.Credicard.biometry.Biometry;
 import br.com.zup.Credicard.card.advice.Advice;
+import br.com.zup.Credicard.card.advice.AdviceRequest;
 import br.com.zup.Credicard.card.blocking.Blocking;
 import br.com.zup.Credicard.card.blocking.BlockingDTO;
 import br.com.zup.Credicard.card.installment.Installment;
@@ -26,7 +27,7 @@ public class CardResponse {
 
     private final String titular;
     private final List<BlockingDTO> bloqueios;
-    private final List<Advice> avisos;
+    private final List<AdviceRequest> avisos;
     private final List<Wallet> carteiras;
     private final List<Installment> parcelas;
     private final List<Biometry> biometries;
@@ -36,7 +37,7 @@ public class CardResponse {
         LocalDateTime emitidoEm,
         String titular,
         List<BlockingDTO> bloqueios,
-        List<Advice> avisos,
+        List<AdviceRequest> avisos,
         List<Wallet> carteiras,
         List<Installment> parcelas,
         String idProposta,
@@ -61,7 +62,7 @@ public class CardResponse {
             emitidoEm,
             titular,
             bloqueios.stream().map(BlockingDTO::toModel).collect(Collectors.toList()),
-            avisos,
+            avisos.stream().map(AdviceRequest::toModel).collect(Collectors.toList()),
             carteiras,
             parcelas,
             idProposta,
@@ -89,7 +90,7 @@ public class CardResponse {
         return bloqueios;
     }
 
-    public List<Advice> getAvisos() {
+    public List<AdviceRequest> getAvisos() {
         return avisos;
     }
 

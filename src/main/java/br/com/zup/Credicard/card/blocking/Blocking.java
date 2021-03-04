@@ -1,13 +1,11 @@
 package br.com.zup.Credicard.card.blocking;
 
 import br.com.zup.Credicard.card.Card;
+import br.com.zup.Credicard.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -32,6 +30,9 @@ public class Blocking {
     @ManyToOne
     private Card card;
 
+    @OneToOne(cascade = CascadeType.MERGE)
+    private User user;
+
     @Deprecated
     private Blocking() {}
 
@@ -39,12 +40,14 @@ public class Blocking {
         String id,
         LocalDateTime bloqueadoEm,
         String sistemaResponsavel,
-        boolean ativo
+        boolean ativo,
+        User user
     ) {
         this.id = id;
         this.bloqueadoEm = bloqueadoEm;
         this.sistemaResponsavel = sistemaResponsavel;
         this.ativo = ativo;
+        this.user = user;
     }
 
     public BlockingDTO toDTO() {
@@ -74,5 +77,9 @@ public class Blocking {
 
     public boolean isAtivo() {
         return ativo;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

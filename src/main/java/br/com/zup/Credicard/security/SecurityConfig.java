@@ -26,8 +26,8 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         super.configure(http);
         http.authorizeRequests()
             .antMatchers("/h2/**").permitAll()
-            .anyRequest()
-            .permitAll();
+            .antMatchers("/actuator/prometheus").permitAll()
+            .anyRequest().authenticated();
         http.csrf().disable();
         http.headers().frameOptions().disable();
     }

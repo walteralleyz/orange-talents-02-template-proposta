@@ -2,6 +2,7 @@ package br.com.zup.Credicard.card;
 
 import br.com.zup.Credicard.biometry.Biometry;
 import br.com.zup.Credicard.card.advice.Advice;
+import br.com.zup.Credicard.card.advice.AdviceRequest;
 import br.com.zup.Credicard.card.blocking.Blocking;
 import br.com.zup.Credicard.card.blocking.BlockingDTO;
 import br.com.zup.Credicard.card.installment.Installment;
@@ -37,7 +38,7 @@ public class Card {
     @LazyCollection(value = LazyCollectionOption.FALSE)
     private List<Blocking> bloqueios;
 
-    @OneToMany(mappedBy = "card")
+    @OneToMany(mappedBy = "card", cascade = CascadeType.MERGE)
     @LazyCollection(value = LazyCollectionOption.FALSE)
     private List<Advice> avisos;
 
@@ -88,7 +89,7 @@ public class Card {
             emitidoEm,
             titular,
             bloqueios.stream().map(Blocking::toDTO).collect(Collectors.toList()),
-            avisos,
+            avisos.stream().map(Advice::toDTO).collect(Collectors.toList()),
             carteiras,
             parcelas,
             idProposta,
@@ -107,6 +108,12 @@ public class Card {
         Blocking blocking = bloqueio.toModel();
         blocking.setCard(this);
         bloqueios.add(blocking);
+    }
+
+    public void setAvisos(AdviceRequest aviso) {
+        Advice advice = aviso.toModel();
+        advice.setCard(this);
+        avisos.add(advice);
     }
 
     public String getId() {

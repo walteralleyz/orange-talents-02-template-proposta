@@ -1,5 +1,7 @@
 package br.com.zup.Credicard.card;
 
+import br.com.zup.Credicard.card.advice.AdviceRequest;
+import br.com.zup.Credicard.card.advice.AdviceResponse;
 import br.com.zup.Credicard.card.blocking.BlockingRequest;
 import br.com.zup.Credicard.card.blocking.BlockingResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -18,5 +20,8 @@ public interface CardClient {
 
     @PostMapping("/api/cartoes/{id}/bloqueios")
     BlockingResponse block(@PathVariable String id, BlockingRequest request);
+
+    @PostMapping("/api/cartoes/{id}/avisos")
+    AdviceResponse travel(@PathVariable String id, AdviceRequest request);
 
 }
