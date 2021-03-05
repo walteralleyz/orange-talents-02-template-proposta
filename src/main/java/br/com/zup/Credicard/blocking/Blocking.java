@@ -1,46 +1,66 @@
-package br.com.zup.Credicard.card.blocking;
+package br.com.zup.Credicard.blocking;
 
-import br.com.zup.Credicard.user.UserRequest;
+import br.com.zup.Credicard.card.Card;
+import br.com.zup.Credicard.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-public class BlockingDTO {
-    private final String id;
+@Entity
+@Table(name = "blocks")
+public class Blocking {
+    @Id
+    @NotNull
+    private String id;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss", shape = JsonFormat.Shape.STRING, timezone = "America/Sao_Paulo")
-    private final LocalDateTime bloqueadoEm;
+    private LocalDateTime bloqueadoEm;
 
-    private final String sistemaResponsavel;
-    private final boolean ativo;
+    @NotBlank
+    private String sistemaResponsavel;
 
-    private UserRequest user;
+    @NotNull
+    private boolean ativo;
 
-    public BlockingDTO(
+    @ManyToOne
+    private Card card;
+
+    @OneToOne(cascade = CascadeType.MERGE)
+    private User user;
+
+    @Deprecated
+    private Blocking() {}
+
+    public Blocking(
         String id,
         LocalDateTime bloqueadoEm,
         String sistemaResponsavel,
-        boolean ativo
+        boolean ativo,
+        User user
     ) {
         this.id = id;
         this.bloqueadoEm = bloqueadoEm;
         this.sistemaResponsavel = sistemaResponsavel;
         this.ativo = ativo;
+        this.user = user;
     }
 
-    public Blocking toModel() {
-        return new Blocking(
+    public BlockingDTO toDTO() {
+        return new BlockingDTO(
             id,
             bloqueadoEm,
             sistemaResponsavel,
-            ativo,
-            user.toModel()
+            ativo
         );
     }
 
-    public void setUser(UserRequest request) {
-        this.user = request;
+    public void setCard(Card card) {
+        this.card = card;
     }
 
     public String getId() {
@@ -59,7 +79,7 @@ public class BlockingDTO {
         return ativo;
     }
 
-    public UserRequest getUser() {
+    public User getUser() {
         return user;
     }
 }

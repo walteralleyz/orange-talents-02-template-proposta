@@ -1,12 +1,11 @@
 package br.com.zup.Credicard.card;
 
 import br.com.zup.Credicard.biometry.Biometry;
-import br.com.zup.Credicard.card.advice.Advice;
-import br.com.zup.Credicard.card.advice.AdviceRequest;
-import br.com.zup.Credicard.card.blocking.Blocking;
-import br.com.zup.Credicard.card.blocking.BlockingDTO;
-import br.com.zup.Credicard.card.installment.Installment;
-import br.com.zup.Credicard.card.wallet.Wallet;
+import br.com.zup.Credicard.advice.AdviceRequest;
+import br.com.zup.Credicard.blocking.BlockingDTO;
+import br.com.zup.Credicard.installment.Installment;
+import br.com.zup.Credicard.wallet.WalletDTO;
+import br.com.zup.Credicard.exception.NotFoundException;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -28,7 +27,7 @@ public class CardResponse {
     private final String titular;
     private final List<BlockingDTO> bloqueios;
     private final List<AdviceRequest> avisos;
-    private final List<Wallet> carteiras;
+    private final List<WalletDTO> carteiras;
     private final List<Installment> parcelas;
     private final List<Biometry> biometries;
 
@@ -38,7 +37,7 @@ public class CardResponse {
         String titular,
         List<BlockingDTO> bloqueios,
         List<AdviceRequest> avisos,
-        List<Wallet> carteiras,
+        List<WalletDTO> carteiras,
         List<Installment> parcelas,
         String idProposta,
         BigDecimal limite,
@@ -63,7 +62,7 @@ public class CardResponse {
             titular,
             bloqueios.stream().map(BlockingDTO::toModel).collect(Collectors.toList()),
             avisos.stream().map(AdviceRequest::toModel).collect(Collectors.toList()),
-            carteiras,
+            carteiras.stream().map(WalletDTO::toModel).collect(Collectors.toList()),
             parcelas,
             idProposta,
             limite
@@ -94,7 +93,7 @@ public class CardResponse {
         return avisos;
     }
 
-    public List<Wallet> getCarteiras() {
+    public List<WalletDTO> getCarteiras() {
         return carteiras;
     }
 
@@ -112,5 +111,18 @@ public class CardResponse {
 
     public List<Biometry> getBiometries() {
         return biometries;
+    }
+
+    public Object getLastElement(String list) {
+        if(list.equals("blocking"))
+            return bloqueios.get(bloqueios.size() - 1);
+
+        if(list.equals("advice"))
+            return avisos.get(avisos.size() - 1);
+
+        if(list.equals("wallet"))
+            return carteiras.get(carteiras.size() - 1);
+
+        throw new NotFoundException(list);
     }
 }

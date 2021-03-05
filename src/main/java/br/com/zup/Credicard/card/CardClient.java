@@ -1,9 +1,11 @@
 package br.com.zup.Credicard.card;
 
-import br.com.zup.Credicard.card.advice.AdviceRequest;
-import br.com.zup.Credicard.card.advice.AdviceResponse;
-import br.com.zup.Credicard.card.blocking.BlockingRequest;
-import br.com.zup.Credicard.card.blocking.BlockingResponse;
+import br.com.zup.Credicard.advice.AdviceRequest;
+import br.com.zup.Credicard.advice.AdviceResponse;
+import br.com.zup.Credicard.blocking.BlockingRequest;
+import br.com.zup.Credicard.blocking.BlockingResponse;
+import br.com.zup.Credicard.wallet.WalletRequest;
+import br.com.zup.Credicard.wallet.WalletResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,5 +25,8 @@ public interface CardClient {
 
     @PostMapping("/api/cartoes/{id}/avisos")
     AdviceResponse travel(@PathVariable String id, AdviceRequest request);
+
+    @PostMapping("/api/cartoes/{id}/carteiras")
+    WalletResponse wallet(@PathVariable String id, WalletRequest request);
 
 }

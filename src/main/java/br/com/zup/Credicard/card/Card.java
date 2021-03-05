@@ -1,14 +1,15 @@
 package br.com.zup.Credicard.card;
 
 import br.com.zup.Credicard.biometry.Biometry;
-import br.com.zup.Credicard.card.advice.Advice;
-import br.com.zup.Credicard.card.advice.AdviceRequest;
-import br.com.zup.Credicard.card.blocking.Blocking;
-import br.com.zup.Credicard.card.blocking.BlockingDTO;
-import br.com.zup.Credicard.card.installment.Installment;
-import br.com.zup.Credicard.card.wallet.Wallet;
+import br.com.zup.Credicard.advice.Advice;
+import br.com.zup.Credicard.advice.AdviceRequest;
+import br.com.zup.Credicard.blocking.Blocking;
+import br.com.zup.Credicard.blocking.BlockingDTO;
+import br.com.zup.Credicard.installment.Installment;
+import br.com.zup.Credicard.wallet.Wallet;
+import br.com.zup.Credicard.wallet.WalletDTO;
 import br.com.zup.Credicard.exception.DomainException;
-import br.com.zup.Credicard.proposal.Proposal;
+import br.com.zup.Credicard.exception.NotFoundException;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -18,6 +19,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Entity
@@ -42,7 +44,7 @@ public class Card {
     @LazyCollection(value = LazyCollectionOption.FALSE)
     private List<Advice> avisos;
 
-    @OneToMany(mappedBy = "card")
+    @OneToMany(mappedBy = "card", cascade = CascadeType.MERGE)
     @LazyCollection(value = LazyCollectionOption.FALSE)
     private List<Wallet> carteiras;
 
@@ -90,7 +92,7 @@ public class Card {
             titular,
             bloqueios.stream().map(Blocking::toDTO).collect(Collectors.toList()),
             avisos.stream().map(Advice::toDTO).collect(Collectors.toList()),
-            carteiras,
+            carteiras.stream().map(Wallet::toDTO).collect(Collectors.toList()),
             parcelas,
             idProposta,
             limite,
@@ -114,6 +116,12 @@ public class Card {
         Advice advice = aviso.toModel();
         advice.setCard(this);
         avisos.add(advice);
+    }
+
+    public void setCarteiras(WalletDTO carteira) {
+        Wallet wallet = carteira.toModel();
+        wallet.setCard(this);
+        carteiras.add(wallet);
     }
 
     public String getId() {
@@ -154,5 +162,10 @@ public class Card {
 
     public List<Biometry> getBiometries() {
         return biometries;
+    }
+
+    public static Card findCardById(String id, EntityManager em) {
+        return Optional.ofNullable(em.find(Card.class, id))
+            .orElseThrow(() -> new NotFoundException("Card"));
     }
 }

@@ -1,4 +1,4 @@
-package br.com.zup.Credicard.card.wallet;
+package br.com.zup.Credicard.wallet;
 
 import br.com.zup.Credicard.card.Card;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -48,6 +48,19 @@ public class Wallet {
         this.email = email;
         this.associadoEm = associadoEm;
         this.emissor = emissor;
+    }
+
+    public WalletDTO toDTO() {
+        return new WalletDTO(
+            id,
+            email,
+            associadoEm,
+            emissor
+        );
+    }
+
+    public void setCard(Card card) {
+        this.card = card;
     }
 
     public String getId() {

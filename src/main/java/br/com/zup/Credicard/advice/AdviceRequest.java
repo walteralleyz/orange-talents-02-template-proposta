@@ -1,4 +1,4 @@
-package br.com.zup.Credicard.card.advice;
+package br.com.zup.Credicard.advice;
 
 import br.com.zup.Credicard.user.UserRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;

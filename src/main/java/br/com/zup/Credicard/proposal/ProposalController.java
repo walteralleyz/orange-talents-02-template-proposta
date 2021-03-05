@@ -53,6 +53,7 @@ public class ProposalController {
 
             return ResponseEntity.status(201).location(uri).build();
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.unprocessableEntity().build();
         }
     }

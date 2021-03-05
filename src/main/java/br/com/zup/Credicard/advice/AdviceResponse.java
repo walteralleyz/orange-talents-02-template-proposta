@@ -1,4 +1,4 @@
-package br.com.zup.Credicard.card.advice;
+package br.com.zup.Credicard.advice;
 
 public class AdviceResponse {
     private String resultado;
@@ -12,5 +12,9 @@ public class AdviceResponse {
 
     public String getResultado() {
         return resultado;
+    }
+
+    public boolean isAdviced() {
+        return resultado.equals("CRIADO");
     }
 }

@@ -1,4 +1,4 @@
-package br.com.zup.Credicard.card.installment;
+package br.com.zup.Credicard.installment;
 
 import br.com.zup.Credicard.card.Card;
 

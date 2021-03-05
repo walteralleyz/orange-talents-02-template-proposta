@@ -1,4 +1,4 @@
-package br.com.zup.Credicard.card.blocking;
+package br.com.zup.Credicard.blocking;
 
 public class BlockingResponse {
     private String resultado;
@@ -11,5 +11,9 @@ public class BlockingResponse {
 
     public String getResultado() {
         return resultado;
+    }
+
+    public boolean isBlocked() {
+        return resultado.equals("BLOQUEADO");
     }
 }

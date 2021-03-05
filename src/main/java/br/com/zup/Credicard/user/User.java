@@ -1,7 +1,7 @@
 package br.com.zup.Credicard.user;
 
-import br.com.zup.Credicard.card.advice.Advice;
-import br.com.zup.Credicard.card.blocking.Blocking;
+import br.com.zup.Credicard.advice.Advice;
+import br.com.zup.Credicard.blocking.Blocking;
 
 import javax.persistence.*;
 
