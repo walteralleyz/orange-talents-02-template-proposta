@@ -1,6 +1,7 @@
 package br.com.zup.Credicard.proposal;
 
 import br.com.zup.Credicard.card.CardResponse;
+import br.com.zup.Credicard.proposal.address.AddressDTO;
 
 import java.math.BigDecimal;
 
@@ -8,7 +9,7 @@ public class ProposalResponse {
     private final Long id;
     private final String name;
     private final String email;
-    private final String address;
+    private final AddressDTO address;
     private final BigDecimal salary;
     private final ProposalStatus status;
     private final CardResponse card;
@@ -17,7 +18,7 @@ public class ProposalResponse {
         Long id,
         String name,
         String email,
-        String address,
+        AddressDTO address,
         BigDecimal salary,
         ProposalStatus status,
         CardResponse card
@@ -43,7 +44,7 @@ public class ProposalResponse {
         return email;
     }
 
-    public String getAddress() {
+    public AddressDTO getAddress() {
         return address;
     }
 

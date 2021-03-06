@@ -2,6 +2,7 @@ package br.com.zup.Credicard.proposal;
 
 import br.com.zup.Credicard.card.Card;
 import br.com.zup.Credicard.card.CardRequest;
+import br.com.zup.Credicard.proposal.address.Address;
 import br.com.zup.Credicard.status.StatusRequest;
 import br.com.zup.Credicard.status.StatusType;
 import br.com.zup.Credicard.validation.Validator;
@@ -24,8 +25,8 @@ public class Proposal {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    private String address;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    private Address address;
 
     @Column(nullable = false)
     private BigDecimal salary;
@@ -40,7 +41,7 @@ public class Proposal {
     @Deprecated
     private Proposal() {}
 
-    public Proposal(String doc, String name, String email, String address, BigDecimal salary) {
+    public Proposal(String doc, String name, String email, Address address, BigDecimal salary) {
         Validator validator = new Validator();
 
         setDoc(doc, validator);
@@ -53,7 +54,7 @@ public class Proposal {
     }
 
     public ProposalResponse toDTO() {
-        return new ProposalResponse(id, name, email, address, salary, proposalStatus, card.toDTO());
+        return new ProposalResponse(id, name, email, address.toDTO(), salary, proposalStatus, card.toDTO());
     }
 
     public StatusRequest toStatus() {
@@ -90,8 +91,8 @@ public class Proposal {
             this.email = email;
     }
 
-    private void setAddress(String address, Validator v) {
-        if(v.body(address).field("address").notBlank().validate())
+    private void setAddress(Address address, Validator v) {
+        if(v.body(address).field("address").notNull().validate())
             this.address = address;
     }
 
@@ -120,7 +121,7 @@ public class Proposal {
         return email;
     }
 
-    public String getAddress() {
+    public Address getAddress() {
         return address;
     }
 

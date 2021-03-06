@@ -2,6 +2,7 @@ package br.com.zup.Credicard.proposal;
 
 import br.com.zup.Credicard.annotation.CPFOrCNPJ;
 import br.com.zup.Credicard.annotation.Unique;
+import br.com.zup.Credicard.proposal.address.AddressDTO;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Email;
@@ -25,8 +26,8 @@ public class ProposalRequest {
     @Email
     private final String email;
 
-    @NotBlank
-    private final String address;
+    @NotNull
+    private final AddressDTO address;
 
     @NotNull
     @Positive
@@ -36,7 +37,7 @@ public class ProposalRequest {
         String doc,
         String name,
         String email,
-        String address,
+        AddressDTO address,
         BigDecimal salary
     ) {
         this.name = name;
@@ -47,7 +48,7 @@ public class ProposalRequest {
     }
 
     public Proposal toModel() {
-        return new Proposal(Base64.getEncoder().encodeToString(doc.getBytes()), name, email, address, salary);
+        return new Proposal(Base64.getEncoder().encodeToString(doc.getBytes()), name, email, address.toModel(), salary);
     }
 
     public String getName() {
@@ -62,7 +63,7 @@ public class ProposalRequest {
         return email;
     }
 
-    public String getAddress() {
+    public AddressDTO getAddress() {
         return address;
     }
 

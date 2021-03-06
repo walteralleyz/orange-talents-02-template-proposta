@@ -31,7 +31,8 @@ public class ProposalController {
     @Autowired
     private CardClient cardClient;
 
-    List<Long> proposalIds = new ArrayList<>();
+    List<Long> elected = new ArrayList<>();
+    List<Long> persisted = new ArrayList<>();
 
     @PostMapping
     @Transactional
@@ -42,21 +43,12 @@ public class ProposalController {
         Proposal proposal = request.toModel();
         URI uri;
 
-        em.persist(proposal);
+        proposal = em.merge(proposal);
         uri = builder.path("/api/proposal/{id}").buildAndExpand(proposal.getId()).toUri();
 
-        try {
-            StatusResponse response = statusClient.status(proposal.toStatus());
-            proposal.setProposalStatus(response.getResultadoSolicitacao());
+        persisted.add(proposal.getId());
 
-            if(proposal.isElegivel())
-                proposalIds.add(proposal.getId());
-
-            return ResponseEntity.status(201).location(uri).build();
-        } catch (Exception e) {
-            proposal.setProposalStatus(StatusType.COM_RESTRICAO);
-            return ResponseEntity.unprocessableEntity().build();
-        }
+        return ResponseEntity.created(uri).build();
     }
 
     @GetMapping("/{id}")
@@ -69,20 +61,37 @@ public class ProposalController {
 
     @Transactional
     @Scheduled(fixedDelay = 2000)
-    public void createProposalCardTask() {
-        int i = 0;
+    public void createProposalElectedTask() {
+        while(!persisted.isEmpty()) {
+            Long id = persisted.get(0);
+            Proposal proposal = em.find(Proposal.class, id);
 
-        while(i < proposalIds.size()) {
-            Long id = proposalIds.get(i);
+            try {
+                StatusResponse response = statusClient.status(proposal.toStatus());
+                proposal.setProposalStatus(response.getResultadoSolicitacao());
+
+                if(proposal.isElegivel()) {
+                    elected.add(proposal.getId());
+                    persisted.remove(0);
+                }
+            } catch (Exception e) {
+                proposal.setProposalStatus(StatusType.COM_RESTRICAO);
+            }
+        }
+    }
+
+    @Transactional
+    @Scheduled(fixedDelay = 2000)
+    public void createProposalCardTask() {
+        while(!elected.isEmpty()) {
+            Long id = elected.get(0);
 
             try {
                 Proposal proposal = em.find(Proposal.class, id);
                 CardResponse cardResponse = cardClient.cards(proposal.toCard());
 
                 proposal.setCard(cardResponse.toModel(em));
-                proposalIds.remove(i);
-
-                i++;
+                elected.remove(0);
             } catch (Exception e) {
                 e.printStackTrace();
             }
