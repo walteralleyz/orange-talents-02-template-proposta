@@ -3,6 +3,8 @@ package br.com.zup.Credicard.wallet;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -19,10 +21,10 @@ public class WalletDTO {
     @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss", shape = JsonFormat.Shape.STRING, timezone = "America/Sao_Paulo")
     private final LocalDateTime associadoEm;
 
-    @NotBlank
-    private final String emissor;
+    @Enumerated(EnumType.STRING)
+    private WalletType emissor;
 
-    public WalletDTO(String id, String email, LocalDateTime associadoEm, String emissor) {
+    public WalletDTO(String id, String email, LocalDateTime associadoEm, WalletType emissor) {
         this.id = id;
         this.email = email;
         this.associadoEm = associadoEm;
@@ -50,7 +52,7 @@ public class WalletDTO {
         return associadoEm;
     }
 
-    public String getEmissor() {
+    public WalletType getEmissor() {
         return emissor;
     }
 }

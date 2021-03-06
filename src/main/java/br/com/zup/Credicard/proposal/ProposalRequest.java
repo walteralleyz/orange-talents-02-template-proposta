@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
+import java.util.Base64;
 
 @Validated
 public class ProposalRequest {
@@ -46,7 +47,7 @@ public class ProposalRequest {
     }
 
     public Proposal toModel() {
-        return new Proposal(doc, name, email, address, salary);
+        return new Proposal(Base64.getEncoder().encodeToString(doc.getBytes()), name, email, address, salary);
     }
 
     public String getName() {

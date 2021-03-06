@@ -5,6 +5,7 @@ import br.com.zup.Credicard.card.CardResponse;
 import br.com.zup.Credicard.exception.NotFoundException;
 import br.com.zup.Credicard.status.StatusClient;
 import br.com.zup.Credicard.status.StatusResponse;
+import br.com.zup.Credicard.status.StatusType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -48,12 +49,12 @@ public class ProposalController {
             StatusResponse response = statusClient.status(proposal.toStatus());
             proposal.setProposalStatus(response.getResultadoSolicitacao());
 
-            if(proposal.getProposalStatus() == ProposalStatus.ELEGIVEL)
+            if(proposal.isElegivel())
                 proposalIds.add(proposal.getId());
 
             return ResponseEntity.status(201).location(uri).build();
         } catch (Exception e) {
-            e.printStackTrace();
+            proposal.setProposalStatus(StatusType.COM_RESTRICAO);
             return ResponseEntity.unprocessableEntity().build();
         }
     }

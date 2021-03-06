@@ -4,10 +4,7 @@ import br.com.zup.Credicard.card.Card;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -29,8 +26,8 @@ public class Wallet {
     @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss.SSSZ")
     private LocalDateTime associadoEm;
 
-    @NotBlank
-    private String emissor;
+    @Enumerated(EnumType.STRING)
+    private WalletType emissor;
 
     @ManyToOne
     private Card card;
@@ -42,7 +39,7 @@ public class Wallet {
         String id,
         String email,
         LocalDateTime associadoEm,
-        String emissor
+        WalletType emissor
     ) {
         this.id = id;
         this.email = email;
@@ -75,7 +72,7 @@ public class Wallet {
         return associadoEm;
     }
 
-    public String getEmissor() {
+    public WalletType getEmissor() {
         return emissor;
     }
 }

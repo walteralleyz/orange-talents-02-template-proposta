@@ -76,7 +76,7 @@ public class Proposal {
     }
 
     private void setDoc(String doc, Validator v) {
-        if(v.body(doc).field("doc").notBlank().CPFOrCNPJ().validate())
+        if(v.body(doc).field("doc").notBlank().validate())
             this.doc = doc;
     }
 
@@ -98,6 +98,10 @@ public class Proposal {
     private void setSalary(BigDecimal salary, Validator v) {
         if(v.body(salary).field("salary").notNull().min(new BigDecimal(1)).validate())
             this.salary = salary;
+    }
+
+    public boolean isElegivel() {
+        return proposalStatus == ProposalStatus.ELEGIVEL;
     }
 
     public Long getId() {
