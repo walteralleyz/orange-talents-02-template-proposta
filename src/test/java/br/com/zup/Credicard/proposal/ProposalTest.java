@@ -75,6 +75,7 @@ public class ProposalTest {
         Thread.sleep(10000);
 
         String response = mvcUtil.doGet(new URI(uri.toString() + "/1"), 200);
+        System.out.println(response);
 
         Assertions.assertTrue(response.contains("idProposta"));
     }
@@ -82,5 +83,19 @@ public class ProposalTest {
     @Test
     void shouldReturnNotFoundStatus() throws Exception {
         mvcUtil.doGet(new URI(uri + "/1"), 404);
+    }
+
+    @Test
+    void shouldNotSaveTheSameDoc() throws Exception {
+        ProposalRequest request = new ProposalRequest(
+            "15192779030",
+            "rogerio",
+            "rogerio@mail.com",
+            dto,
+            new BigDecimal(4000)
+        );
+
+        mvcUtil.doPost(uri, mapper.writeValueAsString(request), 201);
+        mvcUtil.doPost(uri, mapper.writeValueAsString(request), 400);
     }
 }

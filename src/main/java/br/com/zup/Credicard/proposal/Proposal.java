@@ -19,7 +19,7 @@ public class Proposal {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, length = 30, unique = true)
+    @Column(nullable = false, unique = true)
     private String doc;
 
     @Column(nullable = false)
@@ -54,7 +54,7 @@ public class Proposal {
     }
 
     public ProposalResponse toDTO() {
-        return new ProposalResponse(id, name, email, address.toDTO(), salary, proposalStatus, card.toDTO());
+        return new ProposalResponse(id, name, email, doc, address.toDTO(), salary, proposalStatus, card.toDTO());
     }
 
     public StatusRequest toStatus() {

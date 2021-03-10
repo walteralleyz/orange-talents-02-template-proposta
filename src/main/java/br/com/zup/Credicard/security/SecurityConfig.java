@@ -10,7 +10,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 
 @Configuration
 @EnableWebSecurity
-@Profile("container")
+@Profile({"container", "default"})
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override

@@ -9,6 +9,7 @@ public class ProposalResponse {
     private final Long id;
     private final String name;
     private final String email;
+    private final String doc;
     private final AddressDTO address;
     private final BigDecimal salary;
     private final ProposalStatus status;
@@ -18,6 +19,7 @@ public class ProposalResponse {
         Long id,
         String name,
         String email,
+        String doc,
         AddressDTO address,
         BigDecimal salary,
         ProposalStatus status,
@@ -26,6 +28,7 @@ public class ProposalResponse {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.doc = doc;
         this.address = address;
         this.salary = salary;
         this.status = status;
@@ -58,5 +61,9 @@ public class ProposalResponse {
 
     public CardResponse getCard() {
         return card;
+    }
+
+    public String getDoc() {
+        return doc;
     }
 }

@@ -3,6 +3,7 @@ package br.com.zup.Credicard.proposal;
 import br.com.zup.Credicard.annotation.CPFOrCNPJ;
 import br.com.zup.Credicard.annotation.Unique;
 import br.com.zup.Credicard.proposal.address.AddressDTO;
+import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Email;
@@ -10,7 +11,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
-import java.util.Base64;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 @Validated
 public class ProposalRequest {
@@ -48,7 +52,9 @@ public class ProposalRequest {
     }
 
     public Proposal toModel() {
-        return new Proposal(Base64.getEncoder().encodeToString(doc.getBytes()), name, email, address.toModel(), salary);
+        return new Proposal(
+            generateEncodedDoc(),
+            name, email, address.toModel(), salary);
     }
 
     public String getName() {
@@ -69,5 +75,15 @@ public class ProposalRequest {
 
     public BigDecimal getSalary() {
         return salary;
+    }
+
+    public String generateEncodedDoc() {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(doc.getBytes());
+            return md.digest().toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
