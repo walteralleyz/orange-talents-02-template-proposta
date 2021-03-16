@@ -3,6 +3,7 @@ package br.com.zup.Credicard.proposal;
 import br.com.zup.Credicard.card.CardClient;
 import br.com.zup.Credicard.card.CardResponse;
 import br.com.zup.Credicard.exception.NotFoundException;
+import br.com.zup.Credicard.metrics.MetricsProposal;
 import br.com.zup.Credicard.status.StatusClient;
 import br.com.zup.Credicard.status.StatusResponse;
 import br.com.zup.Credicard.status.StatusType;
@@ -31,6 +32,9 @@ public class ProposalController {
     @Autowired
     private CardClient cardClient;
 
+    @Autowired
+    private MetricsProposal metricsProposal;
+
     List<Long> elected = new ArrayList<>();
     List<Long> persisted = new ArrayList<>();
 
@@ -47,6 +51,7 @@ public class ProposalController {
         uri = builder.path("/api/proposal/{id}").buildAndExpand(proposal.getId()).toUri();
 
         persisted.add(proposal.getId());
+        metricsProposal.addString(proposal.getId().toString());
 
         return ResponseEntity.created(uri).build();
     }
@@ -91,6 +96,7 @@ public class ProposalController {
                 CardResponse cardResponse = cardClient.cards(proposal.toCard());
 
                 proposal.setCard(cardResponse.toModel(em));
+
                 elected.remove(0);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -16,7 +16,7 @@ public class BiometryController {
     @PersistenceContext
     private EntityManager em;
 
-    @PostMapping("/{id}")
+    @PostMapping("/card/{id}")
     @Transactional
     public ResponseEntity<?> create(
         @RequestBody @Valid BiometryRequest request,
@@ -30,6 +30,6 @@ public class BiometryController {
 
         URI uri = builder.path("/api/biometry/{id}").buildAndExpand(biometry.getId()).toUri();
 
-        return ResponseEntity.status(201).location(uri).build();
+        return ResponseEntity.created(uri).build();
     }
 }

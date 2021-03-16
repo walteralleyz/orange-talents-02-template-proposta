@@ -24,6 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/h2/**").permitAll()
                 .antMatchers("/actuator/prometheus").permitAll()
                 .antMatchers("/auth/login").permitAll()
+                .antMatchers("/**").hasAuthority("SCOPE_user:read")
                 .anyRequest().authenticated()
         )
             .headers().frameOptions().disable()
